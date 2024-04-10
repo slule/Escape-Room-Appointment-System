@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Escape Rooms</title>
+</head>
+<body>
+<h1>Escape Rooms</h1>
+<div>
+    <ul>
+        <li th:each="escapeRoom : ${escapeRooms}">
+            <span th:text="${escapeRoom.name}">Room Name</span>:
+            <span th:text="${escapeRoom.description}">Room Description</span>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

@@ -43,4 +43,8 @@ public class BookingService {
     public void deleteBooking(Long id) {
         bookingRepository.deleteById(id);
     }
+
+    public List<Booking> findBookingsByCustomerEmail(String email) {
+        return bookingRepository.findByCustomerEmail(email);
+    }
 }

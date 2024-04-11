@@ -1,7 +1,11 @@
 package dmacc.edu.controller;
 
+import dmacc.edu.model.Booking;
 import dmacc.edu.model.User;
+import dmacc.edu.service.BookingService;
 import dmacc.edu.service.UserService;
+
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,9 @@ public class ProfileController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private BookingService bookingService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -32,7 +39,9 @@ public class ProfileController {
     @GetMapping
     public String showProfilePage(Model model) {
         User user = getCurrentUser();
+        List<Booking> appointments = bookingService.findBookingsByCustomerEmail(user.getEmail());
         model.addAttribute("user", user);
+        model.addAttribute("appointments", appointments);
         return "profile";
     }
 

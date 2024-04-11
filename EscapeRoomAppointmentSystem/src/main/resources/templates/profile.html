@@ -24,6 +24,32 @@
         Password:
         <a href="#" th:href="@{/profile/update/password}" class="btn btn-warning">Update Password</a>
     </div>
+    <div class="mt-4">
+        <h2>Current Appointments</h2>
+        <div th:if="${appointments == null || appointments.empty}" class="alert alert-info" role="alert">
+            No appointments.
+        </div>
+        <table th:if="${appointments != null && !appointments.empty}" class="table">
+            <thead>
+                <tr>
+                    <th>Escape Room</th>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>Number of Players</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="appointment : ${appointments}">
+                    <td th:text="${appointment.escapeRoom.name}">Escape Room Name</td>
+                    <td th:text="${appointment.date}">Date</td>
+                    <td th:text="${appointment.startTime}">Start Time</td>
+                    <td th:text="${appointment.numberOfPlayers}">Number of Players</td>
+                    <td th:text="${appointment.paid ? 'Confirmed' : 'Pending Payment'}">Status</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <form th:action="@{/bookRoom}" method="get" class="mt-4">
         <button type="submit" class="btn btn-outline-dark">Book a Room</button>
     </form>

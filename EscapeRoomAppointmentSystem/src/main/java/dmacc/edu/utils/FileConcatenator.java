@@ -17,6 +17,7 @@ public class FileConcatenator {
     private static final List<String> FILES_TO_CONCATENATE = Arrays.asList(
         "\\src\\main\\java\\dmacc\\edu\\bootstrap\\DatabaseLoader.java",
         "\\src\\main\\java\\dmacc\\edu\\config\\SecurityConfig.java",
+        "\\src\\main\\java\\dmacc\\edu\\controller\\BookRoomController.java",
         "\\src\\main\\java\\dmacc\\edu\\controller\\BookingController.java",
         "\\src\\main\\java\\dmacc\\edu\\controller\\EscapeRoomController.java",
         "\\src\\main\\java\\dmacc\\edu\\controller\\UserController.java",
@@ -34,10 +35,12 @@ public class FileConcatenator {
         "\\src\\main\\java\\dmacc\\edu\\service\\EscapeRoomService.java",
         "\\src\\main\\java\\dmacc\\edu\\service\\UserService.java",
         "\\src\\main\\java\\dmacc\\edu\\EscapeRoomAppointmentSystemApplication.java",
+        "\\src\\main\\resources\\templates\\bookRoom.html",
         "\\src\\main\\resources\\templates\\escapeRooms.html",
-        "\\src\\main\\resources\\templates\\index.html",
-        "\\src\\main\\resources\\templates\\register.html",
+        "\\src\\main\\resources\\templates\\login.html",
         "\\src\\main\\resources\\templates\\profile.html",
+        "\\src\\main\\resources\\templates\\register.html",
+        "\\src\\main\\resources\\templates\\updateProfile.html",
         "\\src\\main\\resources\\application.properties",
         "\\pom.xml"
     );
@@ -54,7 +57,7 @@ public class FileConcatenator {
                         writer.write(line);
                         writer.newLine();
                     }
-                    writer.newLine(); // Add an extra line between files for readability
+                    writer.newLine();
                 } catch (IOException e) {
                     System.out.println("Failed to read file: " + fullPath);
                     e.printStackTrace();

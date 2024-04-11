@@ -10,22 +10,25 @@
     <h1>Profile</h1>
     <div class="mb-2">
         Username: <span th:text="${user.username}"></span>
-        <a href="#" th:href="@{/profile/update/username}" class="btn btn-sm btn-secondary">Update</a>
+        <a href="#" th:href="@{/profile/update/username}" class="btn btn-warning">Update</a>
     </div>
     <div class="mb-2">
         Name: <span th:text="${user.name}"></span>
-        <a href="#" th:href="@{/profile/update/name}" class="btn btn-sm btn-secondary">Update</a>
+        <a href="#" th:href="@{/profile/update/name}" class="btn btn-warning">Update</a>
     </div>
     <div class="mb-2">
         Email: <span th:text="${user.email}"></span>
-        <a href="#" th:href="@{/profile/update/email}" class="btn btn-sm btn-secondary">Update</a>
+        <a href="#" th:href="@{/profile/update/email}" class="btn btn-warning">Update</a>
     </div>
     <div class="mb-2">
-        Password: 
-        <a href="#" th:href="@{/profile/update/password}" class="btn btn-sm btn-secondary">Update Password</a>
+        Password:
+        <a href="#" th:href="@{/profile/update/password}" class="btn btn-warning">Update Password</a>
     </div>
-    <form th:action="@{/profile/book}" method="post" class="mt-4">
-        <button type="submit" class="btn btn-success">Book a Room</button>
+    <form th:action="@{/bookRoom}" method="get" class="mt-4">
+        <button type="submit" class="btn btn-outline-dark">Book a Room</button>
+    </form>
+    <form th:action="@{/logout}" method="post" class="mt-4">
+        <button type="submit" class="btn btn-danger">Sign Out</button>
     </form>
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

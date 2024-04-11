@@ -18,17 +18,18 @@ public class EscapeRoom {
     private int capacity;
     private int duration; // in minutes
     private double price;
+    private String availability; //Available, Booked, or Unavailable
 
     // Constructors
     public EscapeRoom() {
     }
 
-    public EscapeRoom(String name, String description, int capacity, int duration, double price) {
+    public EscapeRoom(String name, String description, int capacity, int duration, double price, String availability) {
         this.name = name;
         this.description = description;
         this.capacity = capacity;
         this.duration = duration;
         this.price = price;
+        this.availability = availability;
     }
-
 }

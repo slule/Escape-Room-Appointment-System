@@ -1,6 +1,8 @@
 package dmacc.edu.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +21,8 @@ public class Booking {
     @ManyToOne
     private EscapeRoom escapeRoom;
 
-    private LocalDateTime startTime;
+    private LocalDate date;
+    private LocalTime startTime;
     private String customerName;
     private String customerEmail;
     private int numberOfPlayers;
@@ -29,14 +32,14 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(EscapeRoom escapeRoom, LocalDateTime startTime, String customerName,
+    public Booking(EscapeRoom escapeRoom, LocalDate date, LocalTime startTime, String customerName,
                    String customerEmail, int numberOfPlayers, boolean paid) {
         this.escapeRoom = escapeRoom;
+        this.date = date;
         this.startTime = startTime;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
         this.numberOfPlayers = numberOfPlayers;
         this.paid = paid;
     }
-
 }

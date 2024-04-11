@@ -1,6 +1,7 @@
 package dmacc.edu.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,12 @@ public class EscapeRoomService {
             return escapeRoomRepository.save(existingEscapeRoom);
         }
         return null;
+    }
+    
+    public List<EscapeRoom> getAllAvailableEscapeRooms() {
+        return escapeRoomRepository.findAll().stream()
+                .filter(room -> "Available".equals(room.getAvailability()))
+                .collect(Collectors.toList());
     }
 
     public void deleteEscapeRoom(Long id) {

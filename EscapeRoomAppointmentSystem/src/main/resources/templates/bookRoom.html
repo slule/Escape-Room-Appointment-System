@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book a Room</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Book a Room</h1>
+    <form th:action="@{/bookRoom}" th:object="${booking}" method="post" class="mt-4">
+        <div class="form-group">
+            <label for="escapeRoom">Escape Room:</label>
+            <select id="escapeRoom" name="escapeRoomId" class="form-control" required>
+                <option value="">Select an Escape Room</option>
+                <option th:each="room : ${escapeRooms}" th:value="${room.id}" th:text="${room.name}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="startTime">Start Time:</label>
+            <input type="time" id="startTime" name="startTime" class="form-control" required>
+        </div>
+        <div class="form-group">
+		    <label for="customerName">Customer Name:</label>
+		    <input type="text" id="customerName" name="customerName" class="form-control" th:value="${currentUser.name}" required>
+		</div>
+		<div class="form-group">
+		    <label for="customerEmail">Customer Email:</label>
+		    <input type="email" id="customerEmail" name="customerEmail" class="form-control" th:value="${currentUser.email}" required>
+		</div>
+        <div class="form-group">
+            <label for="numberOfPlayers">Number of Players:</label>
+            <input type="number" id="numberOfPlayers" name="numberOfPlayers" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <div class="form-check">
+                <input type="checkbox" id="paid" name="paid" class="form-check-input">
+                <label for="paid" class="form-check-label">Paid</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Book</button>
+            <a href="/profile" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+    <div th:if="${param.error}" class="alert alert-danger mt-3">
+        The selected escape room is not available. Please choose another room or date.
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

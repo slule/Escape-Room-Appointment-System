@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Profile</h1>
+    <div class="mb-2">
+        Username: <span th:text="${user.username}"></span>
+        <a href="#" th:href="@{/profile/update/username}" class="btn btn-warning">Update</a>
+    </div>
+    <div class="mb-2">
+        Name: <span th:text="${user.name}"></span>
+        <a href="#" th:href="@{/profile/update/name}" class="btn btn-warning">Update</a>
+    </div>
+    <div class="mb-2">
+        Email: <span th:text="${user.email}"></span>
+        <a href="#" th:href="@{/profile/update/email}" class="btn btn-warning">Update</a>
+    </div>
+    <div class="mb-2">
+        Password:
+        <a href="#" th:href="@{/profile/update/password}" class="btn btn-warning">Update Password</a>
+    </div>
+    <div class="mt-4">
+        <h2>Current Appointments</h2>
+        <div th:if="${appointments == null || appointments.empty}" class="alert alert-info" role="alert">
+            No appointments.
+        </div>
+        <table th:if="${appointments != null && !appointments.empty}" class="table">
+            <thead>
+                <tr>
+                    <th>Escape Room</th>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>Number of Players</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="appointment : ${appointments}">
+                    <td th:text="${appointment.escapeRoom.name}">Escape Room Name</td>
+                    <td th:text="${appointment.date}">Date</td>
+                    <td th:text="${appointment.startTime}">Start Time</td>
+                    <td th:text="${appointment.numberOfPlayers}">Number of Players</td>
+                    <td th:text="${appointment.price + (appointment.numberOfPlayers * 5)}">Price</td>
+                    <td th:text="${appointment.paid ? 'Confirmed' : 'Pending Payment'}">Status</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <form th:action="@{/bookRoom}" method="get" class="mt-4">
+        <button type="submit" class="btn btn-outline-dark">Book a Room</button>
+    </form>
+    <form th:action="@{/logout}" method="post" class="mt-4">
+        <button type="submit" class="btn btn-danger">Sign Out</button>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

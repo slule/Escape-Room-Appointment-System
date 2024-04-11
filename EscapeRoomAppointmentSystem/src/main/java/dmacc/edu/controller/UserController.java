@@ -1,6 +1,7 @@
 package dmacc.edu.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
@@ -29,7 +33,7 @@ public class UserController {
         }
         
         try {
-            userService.registerNewUser(user.getUsername(), user.getPassword(), user.getName(), user.getEmail());
+            userService.registerNewUser(user.getUsername(), user.getPassword(), user.getName(), user.getEmail(), passwordEncoder);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "Registration failed: " + e.getMessage());
             return "redirect:/register";

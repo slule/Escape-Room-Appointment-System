@@ -21,6 +21,7 @@ public class FileConcatenator {
         "\\src\\main\\java\\dmacc\\edu\\controller\\EscapeRoomController.java",
         "\\src\\main\\java\\dmacc\\edu\\controller\\UserController.java",
         "\\src\\main\\java\\dmacc\\edu\\controller\\ViewController.java",
+        "\\src\\main\\java\\dmacc\\edu\\controller\\ProfileController.java",
         "\\src\\main\\java\\dmacc\\edu\\model\\Booking.java",
         "\\src\\main\\java\\dmacc\\edu\\model\\EscapeRoom.java",
         "\\src\\main\\java\\dmacc\\edu\\model\\Player.java",
@@ -36,6 +37,7 @@ public class FileConcatenator {
         "\\src\\main\\resources\\templates\\escapeRooms.html",
         "\\src\\main\\resources\\templates\\index.html",
         "\\src\\main\\resources\\templates\\register.html",
+        "\\src\\main\\resources\\templates\\profile.html",
         "\\src\\main\\resources\\application.properties",
         "\\pom.xml"
     );

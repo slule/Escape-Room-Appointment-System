@@ -23,23 +23,27 @@ public class Booking {
 
     private LocalDate date;
     private LocalTime startTime;
+    private LocalTime endTime; // Added endTime to store the end time of the booking
     private String customerName;
     private String customerEmail;
     private int numberOfPlayers;
     private boolean paid;
+    private double price; // Added price to calculate and store the booking price
 
-    // Constructors
+    // Constructors, getters, and setters
     public Booking() {
     }
 
-    public Booking(EscapeRoom escapeRoom, LocalDate date, LocalTime startTime, String customerName,
-                   String customerEmail, int numberOfPlayers, boolean paid) {
+    public Booking(EscapeRoom escapeRoom, LocalDate date, LocalTime startTime, LocalTime endTime,
+                   String customerName, String customerEmail, int numberOfPlayers, boolean paid, double price) {
         this.escapeRoom = escapeRoom;
         this.date = date;
         this.startTime = startTime;
+        this.endTime = endTime;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
         this.numberOfPlayers = numberOfPlayers;
         this.paid = paid;
+        this.price = price;
     }
 }

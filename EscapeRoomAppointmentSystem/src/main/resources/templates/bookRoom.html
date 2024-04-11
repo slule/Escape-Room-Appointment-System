@@ -8,12 +8,12 @@
 <body>
 <div class="container mt-5">
     <h1>Book a Room</h1>
-    <form th:action="@{/bookRoom}" th:object="${booking}" method="post" class="mt-4">
+    <form th:action="@{/bookRoom}" method="post" class="mt-4">
         <div class="form-group">
             <label for="escapeRoom">Escape Room:</label>
-            <select id="escapeRoom" name="escapeRoomId" class="form-control" required>
+            <select id="escapeRoom" name="escapeRoomId" class="form-control" required th:onchange="updateRoomDetails()">
                 <option value="">Select an Escape Room</option>
-                <option th:each="room : ${escapeRooms}" th:value="${room.id}" th:text="${room.name}"></option>
+                <option th:each="room : ${escapeRooms}" th:value="${room.id}" th:text="${room.name} + ' | $' + ${room.price} + '/hr + $5/Person'" th:data-price="${room.price}"></option>
             </select>
         </div>
         <div class="form-group">
@@ -22,19 +22,44 @@
         </div>
         <div class="form-group">
             <label for="startTime">Start Time:</label>
-            <input type="time" id="startTime" name="startTime" class="form-control" required>
+            <select id="startTime" name="startTime" class="form-control" required th:onchange="updateEndTimeOptions(); calculatePrice();">
+                <option value="">Select Start Hour</option>
+                <option value="09:00">9 AM</option>
+                <option value="10:00">10 AM</option>
+                <option value="11:00">11 AM</option>
+                <option value="12:00">12 PM</option>
+                <option value="13:00">1 PM</option>
+                <option value="14:00">2 PM</option>
+                <option value="15:00">3 PM</option>
+                <option value="16:00">4 PM</option>
+                <option value="17:00">5 PM</option>
+                <option value="18:00">6 PM</option>
+                <option value="19:00">7 PM</option>
+                <option value="20:00">8 PM</option>
+            </select>
         </div>
         <div class="form-group">
-		    <label for="customerName">Customer Name:</label>
-		    <input type="text" id="customerName" name="customerName" class="form-control" th:value="${currentUser.name}" required>
-		</div>
-		<div class="form-group">
-		    <label for="customerEmail">Customer Email:</label>
-		    <input type="email" id="customerEmail" name="customerEmail" class="form-control" th:value="${currentUser.email}" required>
-		</div>
+            <label for="endTime">End Time:</label>
+            <select id="endTime" name="endTime" class="form-control" required th:onchange="calculatePrice()">
+                <option value="">Select End Hour</option>
+                <!-- End time options will be added based on start time -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="customerName">Customer Name:</label>
+            <input type="text" id="customerName" name="customerName" class="form-control" required th:value="${currentUser.name}">
+        </div>
+        <div class="form-group">
+            <label for="customerEmail">Customer Email:</label>
+            <input type="email" id="customerEmail" name="customerEmail" class="form-control" required th:value="${currentUser.email}">
+        </div>
         <div class="form-group">
             <label for="numberOfPlayers">Number of Players:</label>
-            <input type="number" id="numberOfPlayers" name="numberOfPlayers" class="form-control" required>
+            <input type="number" id="numberOfPlayers" name="numberOfPlayers" class="form-control" required th:onchange="calculatePrice()">
+        </div>
+        <div class="form-group">
+            <label for="price">Total Price:</label>
+            <input type="text" id="price" name="price" class="form-control" readonly>
         </div>
         <div class="form-group">
             <div class="form-check">
@@ -51,8 +76,41 @@
         The selected escape room is not available. Please choose another room or date.
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#startTime').change(function() {
+            var startTime = $(this).val();
+            var endTimeOptions = $('#endTime').empty().append('<option value="">Select End Hour</option>');
+            if (startTime) {
+                var startHour = parseInt(startTime.split(':')[0]);
+                for (var i = 1; i <= 3; i++) {
+                    var endHour = startHour + i;
+                    if (endHour <= 21) {
+                        var displayHour = endHour > 12 ? endHour - 12 : endHour;
+                        var displayPeriod = endHour >= 12 ? 'PM' : 'AM';
+                        endTimeOptions.append('<option value="' + (endHour < 10 ? '0' + endHour : endHour) + ':00">' + displayHour + ' ' + displayPeriod + '</option>');
+                    }
+                }
+            }
+        });
+    });
+
+    function calculatePrice() {
+        var startHour = $('#startTime').val().split(':')[0];
+        var endHour = $('#endTime').val().split(':')[0];
+        var numberOfPlayers = parseInt($('#numberOfPlayers').val(), 10);
+        var hourlyRate = parseFloat($('#escapeRoom option:selected').data('price'));
+
+        if (startHour && endHour && !isNaN(hourlyRate) && numberOfPlayers) {
+            var hours = endHour - startHour;
+            var basePrice = hourlyRate * hours;
+            var additionalFee = 5 * numberOfPlayers;
+            var totalPrice = basePrice + additionalFee;
+            $('#price').val(totalPrice.toFixed(2));
+        }
+    }
+</script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

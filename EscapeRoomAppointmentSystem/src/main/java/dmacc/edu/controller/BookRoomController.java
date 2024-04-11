@@ -2,6 +2,7 @@
 package dmacc.edu.controller;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,17 +40,23 @@ public class BookRoomController {
     }
 
     @PostMapping("/bookRoom")
-    public String processBooking(Booking booking, @RequestParam Long escapeRoomId, @RequestParam String date) {
-        EscapeRoom escapeRoom = escapeRoomService.getEscapeRoomById(escapeRoomId);
-        if (escapeRoom != null && escapeRoom.getAvailability().equals("Available")) {
-            booking.setEscapeRoom(escapeRoom);
-            booking.setDate(LocalDate.parse(date));
-            bookingService.createBooking(booking);
-            escapeRoom.setAvailability("Booked");
-            escapeRoomService.updateEscapeRoom(escapeRoomId, escapeRoom);
-            return "redirect:/profile";
-        } else {
-            return "redirect:/bookRoom?error=true";
+    public String processBooking(Booking booking, @RequestParam Long escapeRoomId, 
+                                 @RequestParam String date, @RequestParam String startTime,
+                                 @RequestParam String endTime) {
+        EscapeRoom room = escapeRoomService.getEscapeRoomById(escapeRoomId);
+        booking.setEscapeRoom(room);
+        booking.setDate(LocalDate.parse(date));
+        booking.setStartTime(LocalTime.parse(startTime));
+        booking.setEndTime(LocalTime.parse(endTime));
+
+        if (!bookingService.isRoomAvailable(escapeRoomId, booking.getDate(), booking.getStartTime(), booking.getEndTime())) {
+            return "redirect:/bookRoom?error=unavailable";
         }
+
+        booking.setPaid(false); // Default to not paid
+        double calculatedPrice = bookingService.calculatePrice(booking);
+        booking.setPrice(calculatedPrice);  // Set the calculated price
+        bookingService.createBooking(booking);
+        return "redirect:/profile";
     }
 }

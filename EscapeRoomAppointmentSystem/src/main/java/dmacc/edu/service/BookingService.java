@@ -1,5 +1,8 @@
 package dmacc.edu.service;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,4 +50,17 @@ public class BookingService {
     public List<Booking> findBookingsByCustomerEmail(String email) {
         return bookingRepository.findByCustomerEmail(email);
     }
+    
+    public boolean isRoomAvailable(Long roomId, LocalDate date, LocalTime startTime, LocalTime endTime) {
+        List<Booking> bookings = bookingRepository.findByEscapeRoomIdAndDate(roomId, date);
+        return bookings.stream().noneMatch(booking ->
+            booking.getStartTime().isBefore(endTime) && booking.getEndTime().isAfter(startTime)
+        );
+    }
+    
+    public double calculatePrice(Booking booking) {
+        long durationInMinutes = Duration.between(booking.getStartTime(), booking.getEndTime()).toMinutes();
+        return (durationInMinutes / 60.0) * booking.getEscapeRoom().getPrice();
+    }
+
 }

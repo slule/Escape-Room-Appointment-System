@@ -36,6 +36,7 @@
                     <th>Date</th>
                     <th>Start Time</th>
                     <th>Number of Players</th>
+                    <th>Price</th>
                     <th>Status</th>
                 </tr>
             </thead>
@@ -45,6 +46,7 @@
                     <td th:text="${appointment.date}">Date</td>
                     <td th:text="${appointment.startTime}">Start Time</td>
                     <td th:text="${appointment.numberOfPlayers}">Number of Players</td>
+                    <td th:text="${appointment.price + (appointment.numberOfPlayers * 5)}">Price</td>
                     <td th:text="${appointment.paid ? 'Confirmed' : 'Pending Payment'}">Status</td>
                 </tr>
             </tbody>

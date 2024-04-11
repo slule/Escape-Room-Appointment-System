@@ -14,9 +14,15 @@ public class ViewController {
         this.escapeRoomService = escapeRoomService;
     }
 
+    @GetMapping("/")
+    public String index() {
+        return "index";
+    }
+
     @GetMapping("/escapeRooms")
     public String showEscapeRooms(Model model) {
         model.addAttribute("escapeRooms", escapeRoomService.getAllEscapeRooms());
         return "escapeRooms";
     }
+
 }

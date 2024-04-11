@@ -5,13 +5,15 @@ import dmacc.edu.service.UserService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,45 +31,72 @@ public class ProfileController {
 
     @GetMapping
     public String showProfilePage(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        User user = userService.findByUsername(currentPrincipalName);
+        User user = getCurrentUser();
         model.addAttribute("user", user);
         return "profile";
     }
 
-    @PostMapping("/update")
-    public String updateUserProfile(@ModelAttribute("user") User updatedUser,
-                                    @RequestParam(required = false) String newPassword,
-                                    @RequestParam(required = false) String confirmPassword,
-                                    RedirectAttributes redirectAttributes) {
+    @GetMapping("/update/{attribute}")
+    public String showUpdateForm(@PathVariable("attribute") String attribute, Model model) {
+        User user = getCurrentUser();
+        model.addAttribute("user", user);
+        model.addAttribute("updateAttribute", attribute);
+        return "updateProfile";
+    }
+
+    @PostMapping("/update/username")
+    public String updateUsername(@RequestParam("username") String newUsername, RedirectAttributes redirectAttributes) {
         User currentUser = getCurrentUser();
-        
-        currentUser.setUsername(updatedUser.getUsername());
-        currentUser.setName(updatedUser.getName());
-        currentUser.setEmail(updatedUser.getEmail());
-
-        if (!StringUtils.isBlank(newPassword) && !StringUtils.isBlank(confirmPassword)) {
-            if (newPassword.equals(confirmPassword)) {
-                currentUser.setPassword(passwordEncoder.encode(newPassword));
-            } else {
-                redirectAttributes.addFlashAttribute("error", "The passwords do not match.");
-                return "redirect:/profile";
-            }
-        }
-
+        currentUser.setUsername(newUsername);
         userService.updateUser(currentUser);
+        reAuthenticateUser(currentUser, currentUser.getPassword());
+        redirectAttributes.addFlashAttribute("success", "Username updated successfully.");
         return "redirect:/profile";
     }
 
-    @PostMapping("/book")
-    public String bookRoom() {
-        return "redirect:/booking";
+    @PostMapping("/update/name")
+    public String updateName(@RequestParam("name") String newName, RedirectAttributes redirectAttributes) {
+        User currentUser = getCurrentUser();
+        currentUser.setName(newName);
+        userService.updateUser(currentUser);
+        redirectAttributes.addFlashAttribute("success", "Name updated successfully.");
+        return "redirect:/profile";
+    }
+
+    @PostMapping("/update/email")
+    public String updateEmail(@RequestParam("email") String newEmail, RedirectAttributes redirectAttributes) {
+        User currentUser = getCurrentUser();
+        currentUser.setEmail(newEmail);
+        userService.updateUser(currentUser);
+        redirectAttributes.addFlashAttribute("success", "Email updated successfully.");
+        return "redirect:/profile";
+    }
+
+    @PostMapping("/update/password")
+    public String updatePassword(@RequestParam String newPassword, @RequestParam String confirmPassword, RedirectAttributes redirectAttributes) {
+        if (!StringUtils.equals(newPassword, confirmPassword)) {
+            redirectAttributes.addFlashAttribute("error", "Passwords do not match.");
+            return "redirect:/profile/update/password";
+        }
+        User currentUser = getCurrentUser();
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+        currentUser.setPassword(encodedNewPassword);
+        userService.updateUser(currentUser);
+        reAuthenticateUser(currentUser, newPassword);
+        redirectAttributes.addFlashAttribute("success", "Password updated successfully.");
+        return "redirect:/profile";
     }
 
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         return userService.findByUsername(currentPrincipalName);
+    }
+
+    private void reAuthenticateUser(User user, String rawPassword) {
+        UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
+        UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(
+                userDetails, rawPassword, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
     }
 }

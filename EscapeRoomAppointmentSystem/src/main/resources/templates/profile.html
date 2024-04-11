@@ -8,31 +8,22 @@
 <body>
 <div class="container mt-5">
     <h1>Profile</h1>
-    <form th:action="@{/profile/update}" th:object="${user}" method="post">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" th:field="*{username}" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" th:field="*{name}" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" th:field="*{email}" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="newPassword">New Password:</label>
-            <input type="password" id="newPassword" name="newPassword" class="form-control">
-            <small class="form-text text-muted">Leave blank to keep the current password.</small>
-        </div>
-        <div class="form-group">
-            <label for="confirmPassword">Confirm New Password:</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control">
-            <small class="form-text text-muted">Re-enter the new password to confirm.</small>
-        </div>
-        <button type="submit" class="btn btn-primary">Update</button>
-    </form>
+    <div class="mb-2">
+        Username: <span th:text="${user.username}"></span>
+        <a href="#" th:href="@{/profile/update/username}" class="btn btn-sm btn-secondary">Update</a>
+    </div>
+    <div class="mb-2">
+        Name: <span th:text="${user.name}"></span>
+        <a href="#" th:href="@{/profile/update/name}" class="btn btn-sm btn-secondary">Update</a>
+    </div>
+    <div class="mb-2">
+        Email: <span th:text="${user.email}"></span>
+        <a href="#" th:href="@{/profile/update/email}" class="btn btn-sm btn-secondary">Update</a>
+    </div>
+    <div class="mb-2">
+        Password: 
+        <a href="#" th:href="@{/profile/update/password}" class="btn btn-sm btn-secondary">Update Password</a>
+    </div>
     <form th:action="@{/profile/book}" method="post" class="mt-4">
         <button type="submit" class="btn btn-success">Book a Room</button>
     </form>

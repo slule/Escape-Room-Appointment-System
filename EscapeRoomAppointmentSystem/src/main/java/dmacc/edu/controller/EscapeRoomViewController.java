@@ -16,10 +16,16 @@ public class EscapeRoomViewController {
     @Autowired
     private EscapeRoomService escapeRoomService;
 
+    // This method handles the GET request for "/escapeRooms" URL
     @GetMapping
     public String showEscapeRooms(Model model) {
+        // Retrieve a list of all escape rooms from the service
         List<EscapeRoom> escapeRooms = escapeRoomService.getAllEscapeRooms();
+        
+        // Add the list of escape rooms to the model attribute
         model.addAttribute("escapeRooms", escapeRooms);
+        
+        // Return the name of the view template to be rendered
         return "escapeRooms";
     }
 }

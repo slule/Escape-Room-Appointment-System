@@ -26,12 +26,14 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
+    // Get all bookings
     @GetMapping
     public ResponseEntity<List<Booking>> getAllBookings() {
         List<Booking> bookings = bookingService.getAllBookings();
         return ResponseEntity.ok(bookings);
     }
 
+    // Get booking by ID
     @GetMapping("/{id}")
     public ResponseEntity<Booking> getBookingById(@PathVariable Long id) {
         Booking booking = bookingService.getBookingById(id);
@@ -42,12 +44,14 @@ public class BookingController {
         }
     }
 
+    // Create a new booking
     @PostMapping
     public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
         Booking createdBooking = bookingService.createBooking(booking);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBooking);
     }
     
+    // Get available times for a specific room and date
     @GetMapping("/available-times/{roomId}/{date}")
     public ResponseEntity<List<LocalTime>> getAvailableTimes(@PathVariable Long roomId, @PathVariable String date) {
         LocalDate parsedDate = LocalDate.parse(date);
@@ -55,6 +59,7 @@ public class BookingController {
         return ResponseEntity.ok(availableTimes);
     }
     
+    // Get available times for a specific room and date (for editing)
     @GetMapping("/available-times-edit/{roomId}/{date}")
     public ResponseEntity<List<LocalTime>> getAvailableTimesForRoomEdit(
             @PathVariable Long roomId,

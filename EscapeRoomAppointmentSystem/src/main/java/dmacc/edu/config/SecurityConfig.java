@@ -10,17 +10,31 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * This class is responsible for configuring the security settings of the application.
+ * It enables web security and defines the authentication and authorization rules.
+ */
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Autowired
     private UserDetailsService userDetailsService;
 
+    /**
+     * Creates a bean for the password encoder.
+     * @return The password encoder bean.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configures the security filter chain.
+     * @param http The HttpSecurity object to configure.
+     * @return The configured SecurityFilterChain object.
+     * @throws Exception If an error occurs during configuration.
+     */
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -50,6 +64,11 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Configures the global authentication manager.
+     * @param auth The AuthenticationManagerBuilder object to configure.
+     * @throws Exception If an error occurs during configuration.
+     */
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());

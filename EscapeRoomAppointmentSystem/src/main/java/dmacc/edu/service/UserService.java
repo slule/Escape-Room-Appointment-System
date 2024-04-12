@@ -19,6 +19,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    // Method to register a new user
     public User registerNewUser(String username, String password, String name, String email, PasswordEncoder passwordEncoder) {
         User user = new User();
         user.setUsername(username);
@@ -34,6 +35,7 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    // Method to load user details by username
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
@@ -43,16 +45,19 @@ public class UserService implements UserDetailsService {
         return user;
     }
     
+    // Method to get the currently logged in user
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         return findByUsername(currentPrincipalName);
     }
 
+    // Method to find a user by username
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
+    // Method to update a user
     public void updateUser(User user) {
         userRepository.save(user);
     }

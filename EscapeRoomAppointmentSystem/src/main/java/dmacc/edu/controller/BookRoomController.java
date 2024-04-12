@@ -50,12 +50,13 @@ public class BookRoomController {
     @PostMapping("/bookRoom")
     public String processBooking(Booking booking, @RequestParam Long escapeRoomId, 
                                  @RequestParam String date, @RequestParam String startTime,
-                                 @RequestParam String endTime) {
+                                 @RequestParam String endTime, @RequestParam int numberOfPlayers) {
         EscapeRoom room = escapeRoomService.getEscapeRoomById(escapeRoomId);
         booking.setEscapeRoom(room);
         booking.setDate(LocalDate.parse(date));
         booking.setStartTime(LocalTime.parse(startTime));
         booking.setEndTime(LocalTime.parse(endTime));
+        booking.setNumberOfPlayers(numberOfPlayers);
 
         if (!bookingService.isRoomAvailable(escapeRoomId, booking.getDate(), booking.getStartTime(), booking.getEndTime())) {
             return "redirect:/bookRoom?error=unavailable";

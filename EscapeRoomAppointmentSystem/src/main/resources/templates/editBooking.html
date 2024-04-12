@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Booking</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Edit Booking</h1>
+    <form th:action="@{/admin/updateBooking}" th:object="${booking}" method="post" class="mt-4">
+        <input type="hidden" th:field="*{id}" />
+
+        <div class="form-group">
+            <label for="escapeRoomId">Escape Room:</label>
+            <select id="escapeRoomId" name="escapeRoomId" class="form-control" required th:onchange="fetchAvailableTimes();">
+                <option th:each="room : ${escapeRooms}" th:value="${room.id}"
+                        th:text="${room.name + ' | $' + room.price + '/hr'}" 
+                        th:data-price="${room.price}" 
+                        th:selected="${room.id == booking.escapeRoom.id}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" class="form-control" required th:onchange="fetchAvailableTimes();"
+                   th:value="${booking.date}">
+        </div>
+        <div class="form-group">
+            <label for="startTime">Start Time:</label>
+            <select id="startTime" name="startTime" class="form-control" required th:onchange="updateEndTimeOptions(); calculatePrice();">
+                <option th:each="time : ${availableTimes}" th:value="${time}"
+                        th:selected="${time == booking.startTime}">[[${time}]]</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="endTime">End Time:</label>
+            <select id="endTime" name="endTime" class="form-control" required th:onchange="calculatePrice();">
+                <option th:each="time : ${availableEndTimes}" th:value="${time}"
+                        th:selected="${time == booking.endTime}">[[${time}]]</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="customerName">Customer Name:</label>
+            <input type="text" id="customerName" name="customerName" class="form-control" required th:value="${booking.customerName}">
+        </div>
+        <div class="form-group">
+            <label for="customerEmail">Customer Email:</label>
+            <input type="email" id="customerEmail" name="customerEmail" class="form-control" required th:value="${booking.customerEmail}">
+        </div>
+        <div class="form-group">
+            <label for="numberOfPlayers">Number of Players:</label>
+            <input type="number" id="numberOfPlayers" name="numberOfPlayers" class="form-control" required th:value="${booking.numberOfPlayers}" th:onchange="calculatePrice();">
+        </div>
+        <div class="form-group">
+            <label for="price">Total Price:</label>
+            <input type="text" id="price" name="price" class="form-control" readonly th:value="${booking.price}">
+        </div>
+        <div class="form-group">
+            <div class="form-check">
+                <input type="checkbox" id="paid" name="paid" class="form-check-input" th:checked="${booking.paid}">
+                <label for="paid" class="form-check-label">Paid</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Update Booking</button>
+            <a href="/admin/dashboard" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+    <a href="/login" class="btn btn-secondary">Back</a>    
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script>
+    function fetchAvailableTimes() {
+        var roomId = $('#escapeRoomId').val();
+        var date = $('#date').val();
+        var bookingId = $('#id').val();
+
+        if (roomId && date) {
+            $.ajax({
+                url: `/api/bookings/available-times-edit/${roomId}/${date}?excludeBookingId=${bookingId}`,
+                type: 'GET',
+                success: function(data) {
+                    var startTimeSelect = $('#startTime').empty();
+                    data.forEach(function(time) {
+                        startTimeSelect.append(`<option value="${time}">${time}</option>`);
+                    });
+                },
+                error: function() {
+                    alert('Failed to retrieve times. Please try again.');
+                }
+            });
+        }
+    }
+
+    function updateEndTimeOptions() {
+        var startTime = $('#startTime').val();
+        var endTimeSelect = $('#endTime').empty();
+        if (startTime) {
+            var startTimeMoment = moment(startTime, 'HH:mm');
+            for (var i = 1; i <= 3; i++) {
+                var endTime = startTimeMoment.clone().add(i, 'hours').format('HH:mm');
+                endTimeSelect.append(`<option value="${endTime}">${endTime}</option>`);
+            }
+        }
+    }
+
+    function calculatePrice() {
+        var startTime = $('#startTime').val();
+        var endTime = $('#endTime').val();
+        var numberOfPlayers = $('#numberOfPlayers').val();
+        var roomRate = $('#escapeRoomId').find('option:selected').data('price');
+
+        if (startTime && endTime && numberOfPlayers && roomRate) {
+            var startMoment = moment(startTime, 'HH:mm');
+            var endMoment = moment(endTime, 'HH:mm');
+            var durationHours = endMoment.diff(startMoment, 'hours', true);
+
+            var totalPrice = (durationHours * roomRate) + (numberOfPlayers * 5);
+            $('#price').val(totalPrice.toFixed(2));
+        }
+    }
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

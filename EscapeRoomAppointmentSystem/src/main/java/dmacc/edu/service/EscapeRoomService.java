@@ -23,30 +23,32 @@ public class EscapeRoomService {
         return escapeRoomRepository.findById(id).orElse(null);
     }
 
-    public EscapeRoom createEscapeRoom(EscapeRoom escapeRoom) {
-        return escapeRoomRepository.save(escapeRoom);
-    }
-
-    public EscapeRoom updateEscapeRoom(Long id, EscapeRoom escapeRoom) {
-        EscapeRoom existingEscapeRoom = escapeRoomRepository.findById(id).orElse(null);
+    public EscapeRoom updateEscapeRoom(EscapeRoom escapeRoom) {
+        EscapeRoom existingEscapeRoom = escapeRoomRepository.findById(escapeRoom.getId()).orElse(null);
         if (existingEscapeRoom != null) {
             existingEscapeRoom.setName(escapeRoom.getName());
             existingEscapeRoom.setDescription(escapeRoom.getDescription());
             existingEscapeRoom.setCapacity(escapeRoom.getCapacity());
             existingEscapeRoom.setDuration(escapeRoom.getDuration());
             existingEscapeRoom.setPrice(escapeRoom.getPrice());
-            return escapeRoomRepository.save(existingEscapeRoom);
+            existingEscapeRoom.setAvailability(escapeRoom.getAvailability());
+            escapeRoomRepository.save(existingEscapeRoom);
+            return existingEscapeRoom;
         }
         return null;
-    }
-    
-    public List<EscapeRoom> getAllAvailableEscapeRooms() {
-        return escapeRoomRepository.findAll().stream()
-                .filter(room -> "Available".equals(room.getAvailability()))
-                .collect(Collectors.toList());
     }
 
     public void deleteEscapeRoom(Long id) {
         escapeRoomRepository.deleteById(id);
+    }
+
+    public EscapeRoom createEscapeRoom(EscapeRoom escapeRoom) {
+        return escapeRoomRepository.save(escapeRoom);
+    }
+
+    public List<EscapeRoom> getAllAvailableEscapeRooms() {
+        return escapeRoomRepository.findAll().stream()
+                                    .filter(room -> "Available".equals(room.getAvailability()))
+                                    .collect(Collectors.toList());
     }
 }

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Bookings</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Manage Bookings</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Escape Room</th>
+            <th>Date</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Customer Name</th>
+            <th>Customer Email</th>
+            <th>Number of Players</th>
+            <th>Price</th>
+            <th>Paid</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="booking : ${bookings}">
+            <td th:text="${booking.escapeRoom.name}">Escape Room Name</td>
+            <td th:text="${booking.date}">Date</td>
+            <td th:text="${booking.startTime}">Start Time</td>
+            <td th:text="${booking.endTime}">End Time</td>
+            <td th:text="${booking.customerName}">Customer Name</td>
+            <td th:text="${booking.customerEmail}">Customer Email</td>
+            <td th:text="${booking.numberOfPlayers}">Number of Players</td>
+            <td th:text="${booking.price}">Price</td>
+            <td th:text="${booking.paid} ? 'Paid' : 'Unpaid'">Paid</td>
+            <td>
+                <a th:href="@{/admin/editBooking(id=${booking.id})}" class="btn btn-primary">Edit</a>
+                <a th:href="@{/admin/deleteBooking(id=${booking.id})}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="./dashboard" class="btn btn-secondary">Back</a>    
+</div>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

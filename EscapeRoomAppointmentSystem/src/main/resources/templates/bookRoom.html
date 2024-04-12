@@ -48,10 +48,6 @@
             <input type="number" id="numberOfPlayers" name="numberOfPlayers" class="form-control" required th:onchange="calculatePrice()">
         </div>
         <div class="form-group">
-            <label for="price">Total Price:</label>
-            <input type="text" id="price" name="price" class="form-control" readonly>
-        </div>
-        <div class="form-group">
             <div class="form-check">
                 <input type="checkbox" id="paid" name="paid" class="form-check-input">
                 <label for="paid" class="form-check-label">Paid</label>
@@ -97,6 +93,18 @@
         }
     }
 
+    function updateEndTimeOptions() {
+        var startTime = $('#startTime').val();
+        var endTimeSelect = $('#endTime').empty().append('<option value="">Select End Hour</option>');
+        if (startTime) {
+            var startTimeMoment = moment(startTime, 'HH:mm');
+            for (var i = 1; i <= 3; i++) {
+                var endTime = startTimeMoment.clone().add(i, 'hours').format('HH:mm');
+                endTimeSelect.append(`<option value="${endTime}">${formatTime(endTime)}</option>`);
+            }
+        }
+    }
+
     function formatTime(timeString) {
         var time = timeString.split(':');
         var hour = parseInt(time[0]);
@@ -125,22 +133,25 @@
     });
 
     function calculatePrice() {
-        var startHour = parseInt($('#startTime').val().split(':')[0], 10);
-        var endHour = parseInt($('#endTime').val().split(':')[0], 10);
-        var numberOfPlayers = parseInt($('#numberOfPlayers').val(), 10);
-        var hourlyRate = parseFloat($('#escapeRoom').find(':selected').data('price'));
+        var startTime = $('#startTime').val();
+        var endTime = $('#endTime').val();
+        var numberOfPlayers = $('#numberOfPlayers').val();
+        var roomRate = $('#escapeRoomId').find(':selected').data('price');
 
-        if (startHour && endHour && hourlyRate && numberOfPlayers) {
-            var hours = endHour - startHour;
-            var basePrice = hourlyRate * hours;
-            var additionalFee = 5 * numberOfPlayers;
-            var totalPrice = basePrice + additionalFee;
+        var startMoment = moment(startTime, 'HH:mm');
+        var endMoment = moment(endTime, 'HH:mm');
+        var durationHours = endMoment.diff(startMoment, 'hours', true);
+
+        if (startTime && endTime && numberOfPlayers && roomRate) {
+            var totalPrice = (durationHours * roomRate) + (numberOfPlayers * 5);
             $('#price').val(totalPrice.toFixed(2));
         } else {
             $('#price').val('');
         }
     }
+
 </script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 </body>
 </html>

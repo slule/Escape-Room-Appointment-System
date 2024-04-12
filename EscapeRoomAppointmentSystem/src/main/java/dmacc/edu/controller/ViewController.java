@@ -10,5 +10,11 @@ public class ViewController {
     public String login() {
         return "login";
     }
+    
 
+    @GetMapping("/adminLogin")
+    public String adminLogin() {
+        return "adminLogin";
+    }
+    
 }

@@ -35,6 +35,7 @@
                     <th>Escape Room</th>
                     <th>Date</th>
                     <th>Start Time</th>
+                    <th>End Time</th>
                     <th>Number of Players</th>
                     <th>Price</th>
                     <th>Status</th>
@@ -45,6 +46,7 @@
                     <td th:text="${appointment.escapeRoom.name}">Escape Room Name</td>
                     <td th:text="${appointment.date}">Date</td>
                     <td th:text="${appointment.startTime}">Start Time</td>
+                    <td th:text="${appointment.endTime}">End Time</td>
                     <td th:text="${appointment.numberOfPlayers}">Number of Players</td>
                     <td th:text="${appointment.price + (appointment.numberOfPlayers * 5)}">Price</td>
                     <td th:text="${appointment.paid ? 'Confirmed' : 'Pending Payment'}">Status</td>
@@ -54,6 +56,9 @@
     </div>
     <form th:action="@{/bookRoom}" method="get" class="mt-4">
         <button type="submit" class="btn btn-outline-dark">Book a Room</button>
+    </form>
+    <form th:action="@{/escapeRooms}" method="get" class="mt-2">
+        <button type="submit" class="btn btn-outline-primary">View Escape Rooms</button>
     </form>
     <form th:action="@{/logout}" method="post" class="mt-4">
         <button type="submit" class="btn btn-danger">Sign Out</button>

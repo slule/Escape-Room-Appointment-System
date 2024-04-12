@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Admin Dashboard</h1>
+    <a href="manageRooms" class="btn btn-primary">Manage Escape Rooms</a>
+    <a href="manageBookings" class="btn btn-secondary">Manage Bookings</a>
+</div>
+<div class="container mt-5">
+    <form th:action="@{/logout}" method="post" class="mt-4">
+        <button type="submit" class="btn btn-danger">Sign Out</button>
+    </form>
+</div>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

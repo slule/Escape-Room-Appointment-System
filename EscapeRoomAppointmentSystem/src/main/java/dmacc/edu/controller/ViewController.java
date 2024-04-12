@@ -1,28 +1,24 @@
 package dmacc.edu.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import dmacc.edu.service.EscapeRoomService;
 
 @Controller
 public class ViewController {
-    
-    private final EscapeRoomService escapeRoomService;
 
-    public ViewController(EscapeRoomService escapeRoomService) {
-        this.escapeRoomService = escapeRoomService;
-    }
-
+    // This method handles the GET request for the "/login" endpoint
     @GetMapping("/login")
     public String login() {
+        // It returns the string "login" which represents the name of the view template to be rendered
         return "login";
     }
+    
 
-    @GetMapping("/escapeRooms")
-    public String showEscapeRooms(Model model) {
-        model.addAttribute("escapeRooms", escapeRoomService.getAllEscapeRooms());
-        return "escapeRooms";
+    // This method handles the GET request for the "/adminLogin" endpoint
+    @GetMapping("/adminLogin")
+    public String adminLogin() {
+        // It returns the string "adminLogin" which represents the name of the view template to be rendered
+        return "adminLogin";
     }
-
+    
 }

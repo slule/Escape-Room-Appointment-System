@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Escape Rooms</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Manage Escape Rooms</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Capacity</th>
+            <th>Duration</th>
+            <th>Price</th>
+            <th>Availability</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="room : ${escapeRooms}">
+            <td th:text="${room.name}">Room Name</td>
+            <td th:text="${room.description}">Room Description</td>
+            <td th:text="${room.capacity}">Capacity</td>
+            <td th:text="${room.duration}">Duration</td>
+            <td th:text="${room.price}">Price</td>
+            <td th:text="${room.availability}">Availability</td>
+            <td>
+                <a th:href="@{/admin/editEscapeRoom(id=${room.id})}" class="btn btn-primary">Edit</a>
+                <a th:href="@{/admin/deleteEscapeRoom(id=${room.id})}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/admin/addEscapeRoom" class="btn btn-success">Add New Escape Room</a>
+    <a href="./dashboard" class="btn btn-secondary">Back</a>    
+</div>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

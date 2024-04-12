@@ -1,7 +1,6 @@
 package dmacc.edu.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import jakarta.persistence.Entity;
@@ -23,12 +22,12 @@ public class Booking {
 
     private LocalDate date;
     private LocalTime startTime;
-    private LocalTime endTime; // Added endTime to store the end time of the booking
+    private LocalTime endTime;
     private String customerName;
     private String customerEmail;
     private int numberOfPlayers;
     private boolean paid;
-    private double price; // Added price to calculate and store the booking price
+    private double price;
 
     // Constructors, getters, and setters
     public Booking() {

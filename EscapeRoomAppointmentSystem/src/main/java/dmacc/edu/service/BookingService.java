@@ -3,7 +3,9 @@ package dmacc.edu.service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,14 +55,38 @@ public class BookingService {
     
     public boolean isRoomAvailable(Long roomId, LocalDate date, LocalTime startTime, LocalTime endTime) {
         List<Booking> bookings = bookingRepository.findByEscapeRoomIdAndDate(roomId, date);
+        LocalTime bufferEndTime = endTime.plusHours(1); // Add buffer time
         return bookings.stream().noneMatch(booking ->
-            booking.getStartTime().isBefore(endTime) && booking.getEndTime().isAfter(startTime)
+            booking.getStartTime().isBefore(bufferEndTime) && booking.getEndTime().plusHours(1).isAfter(startTime)
         );
     }
     
     public double calculatePrice(Booking booking) {
         long durationInMinutes = Duration.between(booking.getStartTime(), booking.getEndTime()).toMinutes();
         return (durationInMinutes / 60.0) * booking.getEscapeRoom().getPrice();
+    }
+    
+    public List<LocalTime> getAvailableTimesForRoom(Long roomId, LocalDate date) {
+        List<Booking> existingBookings = bookingRepository.findByEscapeRoomIdAndDate(roomId, date);
+        List<LocalTime> availableTimes = new ArrayList<>();
+        
+        LocalTime openingTime = LocalTime.of(9, 0);
+        LocalTime closingTime = LocalTime.of(21, 0);
+
+        IntStream.range(openingTime.getHour(), closingTime.getHour()).forEach(hour -> {
+            LocalTime proposedStart = LocalTime.of(hour, 0);
+            LocalTime proposedEnd = LocalTime.of(hour + 3, 0);
+
+            boolean isAvailable = existingBookings.stream().noneMatch(booking ->
+                booking.getStartTime().isBefore(proposedEnd) && booking.getEndTime().plusHours(1).isAfter(proposedStart)
+            );
+
+            if (isAvailable) {
+                availableTimes.add(proposedStart);
+            }
+        });
+
+        return availableTimes;
     }
 
 }

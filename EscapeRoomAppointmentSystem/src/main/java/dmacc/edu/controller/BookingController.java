@@ -1,5 +1,7 @@
 package dmacc.edu.controller;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +45,13 @@ public class BookingController {
         Booking createdBooking = bookingService.createBooking(booking);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBooking);
     }
+    
+    @GetMapping("/available-times/{roomId}/{date}")
+    public ResponseEntity<List<LocalTime>> getAvailableTimes(@PathVariable Long roomId, @PathVariable String date) {
+        LocalDate parsedDate = LocalDate.parse(date);
+        List<LocalTime> availableTimes = bookingService.getAvailableTimesForRoom(roomId, parsedDate);
+        return ResponseEntity.ok(availableTimes);
+    }
+
 
 }

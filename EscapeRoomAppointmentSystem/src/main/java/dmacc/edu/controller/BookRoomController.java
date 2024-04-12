@@ -1,4 +1,3 @@
-// File: \src\main\java\dmacc\edu\controller\BookRoomController.java
 package dmacc.edu.controller;
 
 import java.time.LocalDate;
@@ -31,13 +30,22 @@ public class BookRoomController {
     }
 
     @GetMapping("/bookRoom")
-    public String showBookingForm(Model model) {
+    public String showBookingForm(@RequestParam(required = false) Long roomId, Model model) {
         User currentUser = userService.getCurrentUser();
         model.addAttribute("escapeRooms", escapeRoomService.getAllAvailableEscapeRooms());
-        model.addAttribute("booking", new Booking());
         model.addAttribute("currentUser", currentUser);
+
+        Booking booking = new Booking();
+        if (roomId != null) {
+            EscapeRoom selectedRoom = escapeRoomService.getEscapeRoomById(roomId);
+            if (selectedRoom != null) {
+                booking.setEscapeRoom(selectedRoom);
+            }
+        }
+        model.addAttribute("booking", booking);
         return "bookRoom";
     }
+
 
     @PostMapping("/bookRoom")
     public String processBooking(Booking booking, @RequestParam Long escapeRoomId, 
@@ -53,9 +61,9 @@ public class BookRoomController {
             return "redirect:/bookRoom?error=unavailable";
         }
 
-        booking.setPaid(false); // Default to not paid
+        booking.setPaid(false);
         double calculatedPrice = bookingService.calculatePrice(booking);
-        booking.setPrice(calculatedPrice);  // Set the calculated price
+        booking.setPrice(calculatedPrice);
         bookingService.createBooking(booking);
         return "redirect:/profile";
     }

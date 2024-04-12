@@ -11,38 +11,28 @@
     <form th:action="@{/bookRoom}" method="post" class="mt-4">
         <div class="form-group">
             <label for="escapeRoom">Escape Room:</label>
-            <select id="escapeRoom" name="escapeRoomId" class="form-control" required th:onchange="updateRoomDetails()">
-                <option value="">Select an Escape Room</option>
-                <option th:each="room : ${escapeRooms}" th:value="${room.id}" th:text="${room.name} + ' | $' + ${room.price} + '/hr + $5/Person'" th:data-price="${room.price}"></option>
-            </select>
+            <select id="escapeRoom" name="escapeRoomId" class="form-control" required th:onchange="fetchAvailableTimes();">
+			    <option value="">Select an Escape Room</option>
+			    <option th:each="room : ${escapeRooms}" th:value="${room.id}"
+		        th:data-price="${room.price}"
+		        th:selected="${booking.escapeRoom != null and room.id.equals(booking.escapeRoom.id)}" 
+		        th:text="${room.name} + ' | $' + ${room.price} + '/hr + $5/Person'"></option>
+			</select>
         </div>
         <div class="form-group">
             <label for="date">Date:</label>
-            <input type="date" id="date" name="date" class="form-control" required>
+            <input type="date" id="date" name="date" class="form-control" required th:onchange="fetchAvailableTimes();">
         </div>
         <div class="form-group">
             <label for="startTime">Start Time:</label>
             <select id="startTime" name="startTime" class="form-control" required th:onchange="updateEndTimeOptions(); calculatePrice();">
                 <option value="">Select Start Hour</option>
-                <option value="09:00">9 AM</option>
-                <option value="10:00">10 AM</option>
-                <option value="11:00">11 AM</option>
-                <option value="12:00">12 PM</option>
-                <option value="13:00">1 PM</option>
-                <option value="14:00">2 PM</option>
-                <option value="15:00">3 PM</option>
-                <option value="16:00">4 PM</option>
-                <option value="17:00">5 PM</option>
-                <option value="18:00">6 PM</option>
-                <option value="19:00">7 PM</option>
-                <option value="20:00">8 PM</option>
             </select>
         </div>
         <div class="form-group">
             <label for="endTime">End Time:</label>
             <select id="endTime" name="endTime" class="form-control" required th:onchange="calculatePrice()">
                 <option value="">Select End Hour</option>
-                <!-- End time options will be added based on start time -->
             </select>
         </div>
         <div class="form-group">
@@ -72,12 +62,50 @@
             <a href="/profile" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
+    <div id="unavailableMessage" class="alert alert-warning mt-3" style="display: none;">
+        This escape room is unavailable on the selected date. If you think this is a problem, please email us at <a href="mailto:escaperooms@dmacc.edu">escaperooms@dmacc.edu</a> or call us at 555-555-5555.
+    </div>
     <div th:if="${param.error}" class="alert alert-danger mt-3">
         The selected escape room is not available. Please choose another room or date.
     </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+    function fetchAvailableTimes() {
+        var roomId = $('#escapeRoom').val();
+        var date = $('#date').val();
+        if (roomId && date) {
+            $.ajax({
+                url: `/api/bookings/available-times/${roomId}/${date}`,
+                type: 'GET',
+                success: function(data) {
+                    var startTimeSelect = $('#startTime').empty().append('<option value="">Select Start Hour</option>');
+                    if (data.length > 0) {
+                        data.forEach(function(time) {
+                            startTimeSelect.append(`<option value="${time}">${formatTime(time)}</option>`);
+                        });
+                        $('#unavailableMessage').hide();
+                    } else {
+                        $('#unavailableMessage').show();
+                    }
+                },
+                error: function() {
+                    alert('Failed to retrieve times. Please try again.');
+                    $('#unavailableMessage').show();
+                }
+            });
+        }
+    }
+
+    function formatTime(timeString) {
+        var time = timeString.split(':');
+        var hour = parseInt(time[0]);
+        var period = hour >= 12 ? 'PM' : 'AM';
+        hour = hour % 12;
+        hour = hour ? hour : 12;
+        return hour + ':' + time[1] + ' ' + period;
+    }
+
     $(document).ready(function() {
         $('#startTime').change(function() {
             var startTime = $(this).val();
@@ -97,17 +125,19 @@
     });
 
     function calculatePrice() {
-        var startHour = $('#startTime').val().split(':')[0];
-        var endHour = $('#endTime').val().split(':')[0];
+        var startHour = parseInt($('#startTime').val().split(':')[0], 10);
+        var endHour = parseInt($('#endTime').val().split(':')[0], 10);
         var numberOfPlayers = parseInt($('#numberOfPlayers').val(), 10);
-        var hourlyRate = parseFloat($('#escapeRoom option:selected').data('price'));
+        var hourlyRate = parseFloat($('#escapeRoom').find(':selected').data('price'));
 
-        if (startHour && endHour && !isNaN(hourlyRate) && numberOfPlayers) {
+        if (startHour && endHour && hourlyRate && numberOfPlayers) {
             var hours = endHour - startHour;
             var basePrice = hourlyRate * hours;
             var additionalFee = 5 * numberOfPlayers;
             var totalPrice = basePrice + additionalFee;
             $('#price').val(totalPrice.toFixed(2));
+        } else {
+            $('#price').val('');
         }
     }
 </script>

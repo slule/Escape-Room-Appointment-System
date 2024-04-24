@@ -39,6 +39,7 @@
                     <th>Number of Players</th>
                     <th>Price</th>
                     <th>Status</th>
+                    <th>Cancellation Request</th> <!-- New column -->
                 </tr>
             </thead>
             <tbody>
@@ -50,6 +51,13 @@
                     <td th:text="${appointment.numberOfPlayers}">Number of Players</td>
                     <td th:text="${appointment.price}">Price</td>
                     <td th:text="${appointment.paid ? 'Confirmed' : 'Pending Payment'}">Status</td>
+                    <td>
+                        <form th:action="@{/profile/requestCancellation}" method="post">
+                            <input type="hidden" th:value="${appointment.id}" name="bookingId"/>
+                            <button type="submit" th:if="${!appointment.requestCancellation}">Request Cancellation</button>
+                            <span th:if="${appointment.requestCancellation}">Requested</span>
+                        </form>
+                    </td>
                 </tr>
             </tbody>
         </table>

@@ -163,4 +163,17 @@ public class AdminController {
         escapeRoomService.createEscapeRoom(escapeRoom);
         return "redirect:/admin/manageRooms";
     }
+    
+    @GetMapping("/cancellationRequests")
+    public String viewCancellationRequests(Model model) {
+        List<Booking> cancellationRequests = bookingService.getCancellationRequests();
+        model.addAttribute("cancellationRequests", cancellationRequests);
+        return "cancellationRequests";
+    }
+
+    @PostMapping("/approveCancellation")
+    public String approveCancellation(@RequestParam Long bookingId) {
+        bookingService.approveCancellation(bookingId);
+        return "redirect:/admin/cancellationRequests";
+    }
 }

@@ -189,5 +189,21 @@ public class BookingService {
 
         return availableTimes;
     }
+    
+    public void requestCancellation(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new IllegalArgumentException("Invalid booking ID"));
+        booking.setRequestCancellation(true);
+        bookingRepository.save(booking);
+    }
+
+    public void approveCancellation(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new IllegalArgumentException("Invalid booking ID"));
+        booking.setRequestCancellation(false);
+        bookingRepository.delete(booking);
+    }
+
+    public List<Booking> getCancellationRequests() {
+        return bookingRepository.findByRequestCancellationTrue();
+    }
 
 }

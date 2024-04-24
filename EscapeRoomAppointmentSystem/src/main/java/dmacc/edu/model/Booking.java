@@ -28,13 +28,14 @@ public class Booking {
     private int numberOfPlayers;
     private boolean paid;
     private double price;
+    private boolean requestCancellation;
 
     // Constructors, getters, and setters
     public Booking() {
     }
 
     public Booking(EscapeRoom escapeRoom, LocalDate date, LocalTime startTime, LocalTime endTime,
-                   String customerName, String customerEmail, int numberOfPlayers, boolean paid, double price) {
+                   String customerName, String customerEmail, int numberOfPlayers, boolean paid, double price, boolean requestCancellation) {
         this.escapeRoom = escapeRoom;
         this.date = date;
         this.startTime = startTime;
@@ -44,5 +45,6 @@ public class Booking {
         this.numberOfPlayers = numberOfPlayers;
         this.paid = paid;
         this.price = price;
+        this.requestCancellation = false;
     }
 }

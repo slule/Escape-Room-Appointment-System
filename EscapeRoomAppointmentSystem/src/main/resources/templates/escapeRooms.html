@@ -21,9 +21,9 @@
     <div class="row">
         <div class="col-sm-4" th:each="room : ${escapeRooms}">
             <div class="card">
-                <img th:src="@{'/images/' + ${room.id} + '.jpg'}"
-                     th:alt="${'Image of ' + room.name + ' escape room'}" 
-                     class="card-img-top">
+                <img th:src="@{/images/{imageFileName}(imageFileName=${room.imageFileName})}"
+			     th:alt="${'Image of ' + room.name + ' escape room'}"
+			     class="card-img-top">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${room.name}">Room Name</h5>
                     <p class="card-text">
@@ -34,6 +34,7 @@
             </div>
         </div>
     </div>
+    <a href="/profile" class="btn btn-secondary">Back</a>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>

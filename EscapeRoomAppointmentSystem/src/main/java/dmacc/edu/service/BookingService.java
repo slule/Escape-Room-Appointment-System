@@ -3,7 +3,6 @@ package dmacc.edu.service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dmacc.edu.model.Booking;
-import dmacc.edu.model.EscapeRoom;
 import dmacc.edu.repository.BookingRepository;
 
 /**

@@ -39,19 +39,19 @@ public class BookRoomController {
         model.addAttribute("escapeRooms", escapeRoomService.getAllAvailableEscapeRooms());
         model.addAttribute("currentUser", currentUser);
 
-        // Create a new booking object
+        // Create a new booking object 
         Booking booking = new Booking();
         if (roomId != null) {
-            // If a room ID is provided, get the corresponding escape room
+            // If a room ID is provided, get the corresponding escape room 
             EscapeRoom selectedRoom = escapeRoomService.getEscapeRoomById(roomId);
             if (selectedRoom != null) {
-                // Set the selected escape room in the booking object
+                // Set the selected escape room in the booking object 
                 booking.setEscapeRoom(selectedRoom);
             }
         }
-        // Add the booking object to the model
+        // Add the booking object to the model 
         model.addAttribute("booking", booking);
-        // Return the view name "bookRoom"
+        // Return the view name "bookRoom" 
         return "bookRoom";
     }
 

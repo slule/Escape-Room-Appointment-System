@@ -25,7 +25,7 @@ public class EscapeRoomService {
         return escapeRoomRepository.findById(id).orElse(null);
     }
 
-    // Update an existing escape room in the repository
+ // Update an existing escape room in the repository
     public EscapeRoom updateEscapeRoom(EscapeRoom escapeRoom) {
         EscapeRoom existingEscapeRoom = escapeRoomRepository.findById(escapeRoom.getId()).orElse(null);
         if (existingEscapeRoom != null) {
@@ -36,6 +36,7 @@ public class EscapeRoomService {
             existingEscapeRoom.setDuration(escapeRoom.getDuration());
             existingEscapeRoom.setPrice(escapeRoom.getPrice());
             existingEscapeRoom.setAvailability(escapeRoom.getAvailability());
+            existingEscapeRoom.setImageFileName(escapeRoom.getImageFileName()); // Update the imageFileName
             // Save the updated escape room in the repository
             escapeRoomRepository.save(existingEscapeRoom);
             return existingEscapeRoom;

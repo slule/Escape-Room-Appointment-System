@@ -48,7 +48,7 @@
                     <td th:text="${appointment.startTime}">Start Time</td>
                     <td th:text="${appointment.endTime}">End Time</td>
                     <td th:text="${appointment.numberOfPlayers}">Number of Players</td>
-                    <td th:text="${appointment.price + (appointment.numberOfPlayers * 5)}">Price</td>
+                    <td th:text="${appointment.price}">Price</td>
                     <td th:text="${appointment.paid ? 'Confirmed' : 'Pending Payment'}">Status</td>
                 </tr>
             </tbody>

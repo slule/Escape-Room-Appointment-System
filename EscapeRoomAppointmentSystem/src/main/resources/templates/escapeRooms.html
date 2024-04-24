@@ -12,6 +12,7 @@
             width: 100%;
             height: 15vw;
             object-fit: cover;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -22,22 +23,59 @@
         <div class="col-sm-4" th:each="room : ${escapeRooms}">
             <div class="card">
                 <img th:src="@{/images/{imageFileName}(imageFileName=${room.imageFileName})}"
-			     th:alt="${'Image of ' + room.name + ' escape room'}"
-			     class="card-img-top">
+                     th:alt="${'Image of ' + room.name + ' escape room'}"
+                     class="card-img-top"
+                     data-toggle="modal"
+                     th:data-target="'#roomModal' + ${room.id}">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${room.name}">Room Name</h5>
                     <p class="card-text">
                         <span th:text="'$' + ${room.price} + ' per hour'">Price</span>
                     </p>
+                    <button type="button" class="btn btn-info" data-toggle="modal" th:data-target="'#roomModal' + ${room.id}">Info</button>
                     <a th:href="@{'/bookRoom?roomId=' + ${room.id}}" class="btn btn-primary">Book Now!</a>
                 </div>
             </div>
         </div>
     </div>
-    <a href="/profile" class="btn btn-secondary">Back</a>
+    <a href="./profile" class="btn btn-secondary">Back</a>    
 </div>
+
+<!-- Modal -->
+<div class="modal fade" th:id="'roomModal' + ${room.id}" tabindex="-1" role="dialog" th:aria-labelledby="'roomModalLabel' + ${room.id}" aria-hidden="true" th:each="room : ${escapeRooms}">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" th:id="'roomModalLabel' + ${room.id}" th:text="${room.name}">Room Name</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <img th:src="@{/images/{imageFileName}(imageFileName=${room.imageFileName})}"
+                             th:alt="${'Image of ' + room.name + ' escape room'}"
+                             class="img-fluid">
+                    </div>
+                    <div class="col-md-6">
+                        <p th:text="${room.description}">Room Description</p>
+                        <p>Capacity: <span th:text="${room.capacity}"></span></p>
+                        <p>Duration: <span th:text="${room.duration}"></span> minutes</p>
+                        <p>Price: $<span th:text="${room.price}"></span> per hour</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a th:href="@{'/bookRoom?roomId=' + ${room.id}}" class="btn btn-primary">Book Now!</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

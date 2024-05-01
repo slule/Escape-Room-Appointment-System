@@ -155,4 +155,15 @@ public class ProfileController {
         // Set the new authentication token in the security context
         SecurityContextHolder.getContext().setAuthentication(newAuth);
     }
+    
+    @PostMapping("/requestCancellation")
+    public String requestCancellation(@RequestParam Long bookingId, RedirectAttributes redirectAttributes) {
+        try {
+            bookingService.requestCancellation(bookingId);
+            redirectAttributes.addFlashAttribute("successMessage", "Cancellation requested successfully.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error requesting cancellation: " + e.getMessage());
+        }
+        return "redirect:/profile";
+    }
 }

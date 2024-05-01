@@ -1,5 +1,6 @@
 package dmacc.edu.controller;
 
+import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -8,16 +9,19 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import dmacc.edu.model.Booking;
 import dmacc.edu.model.EscapeRoom;
 import dmacc.edu.service.BookingService;
 import dmacc.edu.service.EscapeRoomService;
+import dmacc.edu.utils.FileUploadUtil;
 
 @Controller
 @RequestMapping("/admin")
@@ -44,9 +48,20 @@ public class AdminController {
         return "editEscapeRoom";
     }
 
-    // Post mapping for updating an escape room
     @PostMapping("/updateEscapeRoom")
-    public String updateEscapeRoom(EscapeRoom escapeRoom) {
+    public String updateEscapeRoom(@ModelAttribute EscapeRoom escapeRoom, @RequestParam("image") MultipartFile image) throws IOException {
+        if (!image.isEmpty()) {
+            String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+            escapeRoom.setImageFileName(fileName);
+            String uploadDir = "src/main/resources/static/images/";
+            FileUploadUtil.saveFile(uploadDir, fileName, image);
+        } else {
+            // If no new image is uploaded, keep the existing imageFileName
+            EscapeRoom existingEscapeRoom = escapeRoomService.getEscapeRoomById(escapeRoom.getId());
+            if (existingEscapeRoom != null) {
+                escapeRoom.setImageFileName(existingEscapeRoom.getImageFileName());
+            }
+        }
         escapeRoomService.updateEscapeRoom(escapeRoom);
         return "redirect:dashboard";
     }
@@ -138,8 +153,27 @@ public class AdminController {
     
     // Post mapping for creating an escape room
     @PostMapping("/createEscapeRoom")
-    public String createEscapeRoom(@ModelAttribute("escapeRoom") EscapeRoom escapeRoom) {
+    public String createEscapeRoom(@ModelAttribute("escapeRoom") EscapeRoom escapeRoom, @RequestParam("image") MultipartFile image) throws IOException {
+        if (!image.isEmpty()) {
+            String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+            escapeRoom.setImageFileName(fileName);
+            String uploadDir = "src/main/resources/static/images/";
+            FileUploadUtil.saveFile(uploadDir, fileName, image);
+        }
         escapeRoomService.createEscapeRoom(escapeRoom);
         return "redirect:/admin/manageRooms";
+    }
+    
+    @GetMapping("/cancellationRequests")
+    public String viewCancellationRequests(Model model) {
+        List<Booking> cancellationRequests = bookingService.getCancellationRequests();
+        model.addAttribute("cancellationRequests", cancellationRequests);
+        return "cancellationRequests";
+    }
+
+    @PostMapping("/approveCancellation")
+    public String approveCancellation(@RequestParam Long bookingId) {
+        bookingService.approveCancellation(bookingId);
+        return "redirect:/admin/cancellationRequests";
     }
 }

@@ -31,4 +31,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @return a list of bookings associated with the escape room ID and date
      */
     List<Booking> findByEscapeRoomIdAndDate(Long escapeRoomId, LocalDate date);
+    
+    List<Booking> findByRequestCancellationTrue();
 }

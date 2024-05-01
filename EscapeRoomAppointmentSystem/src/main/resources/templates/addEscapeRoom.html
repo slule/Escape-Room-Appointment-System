@@ -8,7 +8,7 @@
 <body>
 <div class="container mt-5">
     <h1>Add Escape Room</h1>
-    <form th:action="@{/admin/createEscapeRoom}" th:object="${escapeRoom}" method="post" class="mt-4">
+    <form th:action="@{/admin/createEscapeRoom}" th:object="${escapeRoom}" method="post" enctype="multipart/form-data" class="mt-4">
         <div class="form-group">
             <label for="name">Name:</label>
             <input type="text" id="name" th:field="*{name}" class="form-control" required>
@@ -30,6 +30,10 @@
             <input type="number" step="0.01" id="price" th:field="*{price}" class="form-control" required>
         </div>
         <div class="form-group">
+            <label for="image">Image:</label>
+            <input type="file" id="image" name="image" class="form-control-file">
+        </div>
+        <div class="form-group">
             <label for="availability">Availability:</label>
             <select id="availability" th:field="*{availability}" class="form-control" required>
                 <option value="Available">Available</option>
@@ -37,6 +41,7 @@
                 <option value="Unavailable">Unavailable</option>
             </select>
         </div>
+        
         <button type="submit" class="btn btn-primary">Add Room</button>
         <a href="/admin/manageRooms" class="btn btn-secondary">Cancel</a>
     </form>

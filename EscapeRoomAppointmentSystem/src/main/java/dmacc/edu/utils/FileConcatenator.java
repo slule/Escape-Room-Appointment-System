@@ -36,6 +36,7 @@ public class FileConcatenator {
         "\\src\\main\\java\\dmacc\\edu\\service\\BookingService.java",
         "\\src\\main\\java\\dmacc\\edu\\service\\EscapeRoomService.java",
         "\\src\\main\\java\\dmacc\\edu\\service\\UserService.java",
+        "\\src\\main\\java\\dmacc\\edu\\utils\\FileUploadUtil.java",
         "\\src\\main\\java\\dmacc\\edu\\EscapeRoomAppointmentSystemApplication.java",
         "\\src\\main\\resources\\templates\\adminDashboard.html",
         "\\src\\main\\resources\\templates\\adminLogin.html",
@@ -57,7 +58,7 @@ public class FileConcatenator {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(OUTPUT_FILE, false))) {
             for (String relativePath : FILES_TO_CONCATENATE) {
                 String fullPath = Paths.get(PROJECT_DIRECTORY, relativePath).toString();
-                writer.write("// File: " + relativePath); // Add comment indicating the file
+                writer.write("// File: " + relativePath);
                 writer.newLine();
                 try (BufferedReader reader = new BufferedReader(new FileReader(fullPath))) {
                     String line;

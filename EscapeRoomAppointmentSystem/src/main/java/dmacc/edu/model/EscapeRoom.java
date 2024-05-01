@@ -19,6 +19,7 @@ public class EscapeRoom {
     private int duration; // in minutes
     private double price;
     private String availability; //Available, Booked, or Unavailable
+    private String imageFileName;
 
     // Constructors
     public EscapeRoom() {
